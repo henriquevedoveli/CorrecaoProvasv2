@@ -1,3 +1,4 @@
+# bibliotecas necessarias
 import cv2 
 import numpy as np
 from numpy.lib import utils
@@ -6,17 +7,18 @@ import utils
 ###############################
 path = 'Imgs/1.jpg'
 
-wImg = 700
-hImg = 700
-
-questions = 5
-choices = 5
-
+# tamanho da imagem
+wImg,hImg = 700, 700
+#numero de questoes
+#numeros de escolhas possiveis
+questions, choices = 5, 5
+# respostas corretas
 ans = [1,2,0,1,4]
 
 dim = (wImg, hImg)
 ###############################
 
+#lendo a imagem
 img = cv2.imread(path)
 
 ## IMAGE PREPROCESSING
@@ -27,7 +29,6 @@ imgBigCont = img.copy() # copping the img for do the contour
 imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 imgBlur = cv2.GaussianBlur(imgGray, (5,5), 1)
 imgCanny = cv2.Canny(imgBlur, 10, 50)
-
 
 ## FINDING THE CONTOURS
 cont,hier = cv2.findContours(imgCanny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -112,23 +113,17 @@ if bigSqr.size != 0 and scdSqr.size != 0:
     imgFinal = cv2.addWeighted(imgFinal, 1, imgInvWarp, 2 ,0)
     imgFinal = cv2.addWeighted(imgFinal, 1, imgInvGrade, -1 ,0)
 
+# Para ver as transformacoes feitas na imagem para chegar ao resultado final
+# basta descomentar esta parte do codigo
+# imgArray = ([img,imgGray,imgBlur,imgCanny],
+#            [imgCont, imgBigCont, imgWarpPersp, imgThresh],
+#            [imgResult, imgRawDrawing, imgInvWarp, imgFinal])
 
-
-
-imgBlanck = np.zeros_like(img)
-
-
-imgArray = ([img,imgGray,imgBlur,imgCanny],
-            [imgCont, imgBigCont, imgWarpPersp, imgThresh],
-            [imgResult, imgRawDrawing, imgInvWarp, imgFinal])
-
-
-labels = [['ORIGINAL', 'GRAY', "BLUR", "CANNY"],
-            ['CONTOURS', 'BIGGEST CONTOURS', 'WARP', "THRESHOLD"],
-            ['RESULT', 'RAW DRAWING', 'INVERSE WARP', 'FINAL' ] ]
-imgStacked = utils.stackImages(imgArray, 0.4,  labels)
-
+# labels = [['ORIGINAL', 'GRAY', "BLUR", "CANNY"],
+#            ['CONTOURS', 'BIGGEST CONTOURS', 'WARP', "THRESHOLD"],
+#            ['RESULT', 'RAW DRAWING', 'INVERSE WARP', 'FINAL' ] ]
+# imgStacked = utils.stackImages(imgArray, 0.4,  labels)
+#cv2.imshow("Stacked Images", imgStacked)
 
 cv2.imshow('Final', imgFinal)
-cv2.imshow("Stacked Images", imgStacked)
 cv2.waitKey(0)
